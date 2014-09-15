@@ -117,7 +117,7 @@ var _ = {};
       var lenArr=collection.length;
       for (var i=0;i<lenArr;i++) results.push(iterator(collection[i]))
     };
-    if (Array.isArray(collection)==false) {
+  if (Array.isArray(collection)==false) {
       for (var key in collection) results.push(iterator(collection[key]))
     };
   return results;
@@ -169,6 +169,19 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
+    var result=0;
+    if (accumulator===undefined) 
+      result=collection[0];
+    else
+      result = accumulator;
+    if (Array.isArray(collection)==true) {
+      var lenArr=collection.length;
+      for (var i=0;i<lenArr;i++) result=iterator(result,collection[i])
+    };
+    if (Array.isArray(collection)==false) {
+      for (var key in collection) result=iterator(result,collection[key])
+    };
+    return result;
   };
 
   // Determine if the array or object contains a given value (using `===`).
@@ -187,6 +200,21 @@ var _ = {};
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
+    if (collection.length==0)
+      return true
+    var funct;
+    if (iterator==undefined)
+      funct=function(x){
+        return _.identity(x)
+      };
+    else 
+      funct=iterator;
+    return _.reduce(collection, function(wasFound, item) {
+      if (wasFound) {
+        return Boolean(funct(item));
+      }
+      return false;
+    }, true);
   };
 
   // Determine whether any of the elements pass a truth test. If no iterator is
