@@ -255,11 +255,37 @@ var _ = {};
   //     bla: "even more stuff"
   //   }); // obj1 now contains key1, key2, key3 and bla
   _.extend = function(obj) {
+    var result=arguments[0];
+    var n=arguments.length;
+    // The following lines test for the case of empty objects. I do not need all this code but will keep it just in case
+   // if (_.every(arguments, function(ob){  //this functon tests whether an object is empty
+     // var len=0;
+      //for (var key in ob) len=len+1;
+      //if (len==0)  
+      //  return true;
+      //return false;
+    //})==true)
+      //return arguments[0];
+      // From here starts  the code for all other cases
+    for (var i=0;i<n;i++) {
+      for (var key in arguments[i]) {
+        result[key]=arguments[i][key];
+      };
+    };
+    return result;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    var result=arguments[0];
+    var n=arguments.length;
+    for (var i=0;i<n;i++) {
+      for (var key in arguments[i]) {
+        if (result[key]==undefined) result[key]=arguments[i][key];
+      };
+    };
+    return result;
   };
 
 
@@ -301,6 +327,18 @@ var _ = {};
   // already computed the result for the given argument and return that value
   // instead if possible.
   _.memoize = function(func) {
+   var result;
+   var previousValues={};
+    return function(x) {
+
+     // previousValues={};
+      if(previousValues[x]==undefined) {
+        previousValues[x]=func.apply(this,arguments);
+
+      };
+      result=previousValues[x];
+      return result;
+    };
   };
 
   // Delays a function for the given number of milliseconds, and then calls
