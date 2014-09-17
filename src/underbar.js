@@ -370,6 +370,20 @@ var _ = {};
   // input array. For a tip on how to make a copy of an array, see:
   // http://mdn.io/Array.prototype.slice
   _.shuffle = function(array) {
+    var n=array.length;
+    var result=array.slice(0,n);
+    var store=[];
+    if (n==0)
+      return result;
+    for (var i=0;i<n;i++) {
+      var k=Math.floor(Math.random()*n);
+      while (_.contains(store,k)==true && k>=1) k=k-1;
+      while (_.contains(store,k)==true && k==0) k=n-1;
+      while (_.contains(store,k)==true && k>=1) k=k-1;
+      store.push(k);
+      result[k]=array[i];
+    };
+    return result;
   };
 
 
