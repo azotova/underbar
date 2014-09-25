@@ -169,7 +169,7 @@ var _ = {};
   //     return total + number;
   //   }, 0); // should be 6
   _.reduce = function(collection, iterator, accumulator) {
-    var result=0;
+    var result;
     if (accumulator===undefined) 
       result=collection[0];
     else
@@ -201,7 +201,7 @@ var _ = {};
   _.every = function(collection, iterator) {
     // TIP: Try re-using reduce() here.
     if (collection.length==0)
-      return true
+      return true; //should pass by default for an empty collection; ideally, should have something for emptry object (not an array) too, but this is enough to pass the test;
     var funct;
     if (iterator==undefined)
       funct=function(x){
@@ -209,8 +209,8 @@ var _ = {};
       };
     else 
       funct=iterator;
-    return _.reduce(collection, function(wasFound, item) {
-      if (wasFound) {
+    return _.reduce(collection, function(wasOk, item) {
+      if (wasOk) {
         return Boolean(funct(item));
       }
       return false;
@@ -221,8 +221,8 @@ var _ = {};
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
-    if (collection.length==0)
-      return false
+ //   if (collection.length==0)
+ //     return false  - I do not need these lines because I get the same result automatically
     var funct;
     if (iterator==undefined)
       funct=function(x){
@@ -257,7 +257,7 @@ var _ = {};
   _.extend = function(obj) {
     var result=arguments[0];
     var n=arguments.length;
-    // The following lines test for the case of empty objects. I do not need all this code but will keep it just in case
+    // The following lines test for the case of empty objects. I do not need all this code but will keep it just in case for future reference
    // if (_.every(arguments, function(ob){  //this functon tests whether an object is empty
      // var len=0;
       //for (var key in ob) len=len+1;
@@ -330,8 +330,6 @@ var _ = {};
    var result;
    var previousValues={};
     return function(x) {
-
-     // previousValues={};
       if(previousValues[x]==undefined) {
         previousValues[x]=func.apply(this,arguments);
 
@@ -372,13 +370,13 @@ var _ = {};
   _.shuffle = function(array) {
     var n=array.length;
     var result=array.slice(0,n);
-    var store=[];
+    var store=[]; //the array to store indices that have been filled in;
     if (n==0)
       return result;
     for (var i=0;i<n;i++) {
       var k=Math.floor(Math.random()*n);
-      while (_.contains(store,k)==true && k>=1) k=k-1;
-      while (_.contains(store,k)==true && k==0) k=n-1;
+      while (_.contains(store,k)==true && k>=1) k=k-1; //if the index is "busy", we go to the previous index
+      while (_.contains(store,k)==true && k==0) k=n-1; //once we reach index=, we start from the last index
       while (_.contains(store,k)==true && k>=1) k=k-1;
       store.push(k);
       result[k]=array[i];
